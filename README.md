@@ -21,14 +21,14 @@
 - **Giao diện**: Căn giữa màn hình, nút lớn, trạng thái rõ ràng.
 
 ## Công nghệ  
-- **Ngôn ngữ**: Python 3.x  
+- **Ngôn ngữ**: Python 3.10.12 
 - **Thư viện**:  
   - `tkinter`: Giao diện đồ họa  
   - `pyperclip`: Sao chép clipboard  
   - `os`: Quản lý tệp  
   - `pycryptodome`: Thư viện mã hóa AES (hỗ trợ các chế độ như CBC, ECB)  
 - **Thuật toán**: AES
-
+- **Hỗ trợ**: Sản phẩm được làm với sự giúp sức của Grok (xAI) `=))`.
 ## Cài đặt  
 1. Cài Python 3.x (khuyến nghị phiên bản mới nhất).  
 2. Cài các thư viện:  
