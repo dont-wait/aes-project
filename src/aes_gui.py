@@ -7,88 +7,96 @@ class AESApp:
         self.root = root
         self.root.title("AES Encryption/Decryption")
 
-        # Frame chính
-        self.main_frame = tk.Frame(self.root)
-        self.main_frame.pack(padx=10, pady=10)
+        # Căn giữa cửa sổ
+        self.root.geometry("1150x600")
+        self.root.resizable(False, False)
 
-        # Chia giao diện thành 2 phần: Encryption và Decryption
-        self.enc_frame = tk.Frame(self.main_frame)
-        self.enc_frame.grid(row=0, column=0, padx=10)
+        # Khung chính
+        self.main_frame = tk.Frame(self.root, padx=20, pady=20)
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.dec_frame = tk.Frame(self.main_frame)
-        self.dec_frame.grid(row=0, column=1, padx=10)
+        # LabelFrame cho mã hóa
+        self.enc_frame = tk.LabelFrame(self.main_frame, text="🔐 AES Encryption", padx=10, pady=10, font=("Arial", 12, "bold"))
+        self.enc_frame.grid(row=0, column=0, padx=10, pady=10, sticky="n")
 
-        # --- Encryption Section ---
-        tk.Label(self.enc_frame, text="AES Encryption", font=("Arial", 14, "bold")).grid(row=0, column=0, columnspan=2, pady=5)
+        # LabelFrame cho giải mã
+        self.dec_frame = tk.LabelFrame(self.main_frame, text="🔓 AES Decryption", padx=10, pady=10, font=("Arial", 12, "bold"))
+        self.dec_frame.grid(row=0, column=1, padx=10, pady=10, sticky="n")
 
+        self.build_encryption_section()
+        self.build_decryption_section()
+
+    def build_encryption_section(self):
         # Plain Text Input
-        tk.Label(self.enc_frame, text="Enter Plain Text to Encrypt").grid(row=1, column=0, sticky="w")
-        self.plain_text = tk.Text(self.enc_frame, height=3, width=40)
-        self.plain_text.grid(row=2, column=0, columnspan=2, pady=5)
+        tk.Label(self.enc_frame, text="Enter Plain Text:").grid(row=0, column=0, sticky="w")
+        self.plain_text = tk.Text(self.enc_frame, height=3, width=45)
+        self.plain_text.grid(row=1, column=0, columnspan=2, pady=5)
 
         # Key Size
-        tk.Label(self.enc_frame, text="Key Size in Bits").grid(row=3, column=0, sticky="w")
-        self.key_size_enc = ttk.Combobox(self.enc_frame, values=["128", "192", "256"], state="readonly")
+        tk.Label(self.enc_frame, text="Key Size (bits):").grid(row=2, column=0, sticky="w")
+        self.key_size_enc = ttk.Combobox(self.enc_frame, values=["128", "192", "256"], state="readonly", width=10)
         self.key_size_enc.set("128")
-        self.key_size_enc.grid(row=4, column=0, pady=5)
+        self.key_size_enc.grid(row=2, column=1, sticky="w")
 
         # Secret Key
-        tk.Label(self.enc_frame, text="Enter Secret Key").grid(row=5, column=0, sticky="w")
-        self.secret_key_enc = tk.Entry(self.enc_frame, width=40)
-        self.secret_key_enc.grid(row=6, column=0, columnspan=2, pady=5)
+        tk.Label(self.enc_frame, text="Secret Key:").grid(row=3, column=0, sticky="w")
+        self.secret_key_enc = tk.Entry(self.enc_frame, width=45)
+        self.secret_key_enc.grid(row=4, column=0, columnspan=2, pady=5)
 
-        # Random Key Button for Encryption
-        tk.Button(self.enc_frame, text="Random Key", command=self.generate_random_key_enc).grid(row=7, column=0, columnspan=2, pady=5)
+        # Random Key Button
+        tk.Button(self.enc_frame, text="🔄 Random Key", command=self.generate_random_key_enc).grid(row=5, column=0, columnspan=2, pady=5)
 
         # Output Format
-        tk.Label(self.enc_frame, text="Output Text Format").grid(row=8, column=0, sticky="w")
+        tk.Label(self.enc_frame, text="Output Format:").grid(row=6, column=0, sticky="w")
         self.output_format_enc = tk.StringVar(value="Base64")
-        tk.Radiobutton(self.enc_frame, text="Base64", variable=self.output_format_enc, value="Base64").grid(row=9, column=0, sticky="w")
-        tk.Radiobutton(self.enc_frame, text="Hex", variable=self.output_format_enc, value="Hex").grid(row=9, column=1, sticky="w")
+        format_frame = tk.Frame(self.enc_frame)
+        format_frame.grid(row=6, column=1, sticky="w")
+        tk.Radiobutton(format_frame, text="Base64", variable=self.output_format_enc, value="Base64").pack(side=tk.LEFT)
+        tk.Radiobutton(format_frame, text="Hex", variable=self.output_format_enc, value="Hex").pack(side=tk.LEFT)
 
         # Encrypt Button
-        tk.Button(self.enc_frame, text="Encrypt", command=self.encrypt).grid(row=10, column=0, columnspan=2, pady=10)
+        tk.Button(self.enc_frame, text="Encrypt", command=self.encrypt, bg="#4CAF50", fg="white", width=20).grid(row=7, column=0, columnspan=2, pady=10)
 
-        # Encrypted Output
-        tk.Label(self.enc_frame, text="AES Encrypted Output").grid(row=11, column=0, sticky="w")
-        self.encrypted_output = tk.Text(self.enc_frame, height=3, width=40)
-        self.encrypted_output.grid(row=12, column=0, columnspan=2, pady=5)
+        # Output
+        tk.Label(self.enc_frame, text="Encrypted Output:").grid(row=8, column=0, sticky="w")
+        self.encrypted_output = tk.Text(self.enc_frame, height=3, width=45)
+        self.encrypted_output.grid(row=9, column=0, columnspan=2, pady=5)
 
-        # --- Decryption Section ---
-        tk.Label(self.dec_frame, text="AES Decryption", font=("Arial", 14, "bold")).grid(row=0, column=0, columnspan=2, pady=5)
-
+    def build_decryption_section(self):
         # Encrypted Text Input
-        tk.Label(self.dec_frame, text="AES Encrypted Text").grid(row=1, column=0, sticky="w")
-        self.encrypted_text = tk.Text(self.dec_frame, height=3, width=40)
-        self.encrypted_text.grid(row=2, column=0, columnspan=2, pady=5)
+        tk.Label(self.dec_frame, text="Encrypted Text:").grid(row=0, column=0, sticky="w")
+        self.encrypted_text = tk.Text(self.dec_frame, height=3, width=45)
+        self.encrypted_text.grid(row=1, column=0, columnspan=2, pady=5)
 
         # Key Size
-        tk.Label(self.dec_frame, text="Key Size in Bits").grid(row=3, column=0, sticky="w")
-        self.key_size_dec = ttk.Combobox(self.dec_frame, values=["128", "192", "256"], state="readonly")
+        tk.Label(self.dec_frame, text="Key Size (bits):").grid(row=2, column=0, sticky="w")
+        self.key_size_dec = ttk.Combobox(self.dec_frame, values=["128", "192", "256"], state="readonly", width=10)
         self.key_size_dec.set("128")
-        self.key_size_dec.grid(row=4, column=0, pady=5)
+        self.key_size_dec.grid(row=2, column=1, sticky="w")
 
         # Secret Key
-        tk.Label(self.dec_frame, text="Enter Secret Key used for Encryption").grid(row=5, column=0, sticky="w")
-        self.secret_key_dec = tk.Entry(self.dec_frame, width=40)
-        self.secret_key_dec.grid(row=6, column=0, columnspan=2, pady=5)
+        tk.Label(self.dec_frame, text="Secret Key:").grid(row=3, column=0, sticky="w")
+        self.secret_key_dec = tk.Entry(self.dec_frame, width=45)
+        self.secret_key_dec.grid(row=4, column=0, columnspan=2, pady=5)
 
-        # Random Key Button for Decryption
-        tk.Button(self.dec_frame, text="Random Key", command=self.generate_random_key_dec).grid(row=7, column=0, columnspan=2, pady=5)
+        # Random Key Button
+        tk.Button(self.dec_frame, text="🔄 Random Key", command=self.generate_random_key_dec).grid(row=5, column=0, columnspan=2, pady=5)
 
         # Output Format
-        tk.Label(self.dec_frame, text="Output Text Format").grid(row=8, column=0, sticky="w")
+        tk.Label(self.dec_frame, text="Output Format:").grid(row=6, column=0, sticky="w")
         self.output_format_dec = tk.StringVar(value="Plain-Text")
-        tk.Radiobutton(self.dec_frame, text="Plain-Text", variable=self.output_format_dec, value="Plain-Text").grid(row=9, column=0, sticky="w")
-        tk.Radiobutton(self.dec_frame, text="Base64", variable=self.output_format_dec, value="Base64").grid(row=9, column=1, sticky="w")
+        format_frame = tk.Frame(self.dec_frame)
+        format_frame.grid(row=6, column=1, sticky="w")
+        tk.Radiobutton(format_frame, text="Plain-Text", variable=self.output_format_dec, value="Plain-Text").pack(side=tk.LEFT)
+        tk.Radiobutton(format_frame, text="Base64", variable=self.output_format_dec, value="Base64").pack(side=tk.LEFT)
 
         # Decrypt Button
-        tk.Button(self.dec_frame, text="Decrypt", command=self.decrypt).grid(row=10, column=0, columnspan=2, pady=10)
+        tk.Button(self.dec_frame, text="Decrypt", command=self.decrypt, bg="#2196F3", fg="white", width=20).grid(row=7, column=0, columnspan=2, pady=10)
 
-        # Decrypted Output
-        tk.Label(self.dec_frame, text="AES Decrypted Output").grid(row=11, column=0, sticky="w")
-        self.decrypted_output = tk.Text(self.dec_frame, height=3, width=40)
-        self.decrypted_output.grid(row=12, column=0, columnspan=2, pady=5)
+        # Output
+        tk.Label(self.dec_frame, text="Decrypted Output:").grid(row=8, column=0, sticky="w")
+        self.decrypted_output = tk.Text(self.dec_frame, height=3, width=45)
+        self.decrypted_output.grid(row=9, column=0, columnspan=2, pady=5)
 
     def generate_random_key_enc(self):
         try:
@@ -110,16 +118,12 @@ class AESApp:
 
     def encrypt(self):
         try:
-            # Lấy dữ liệu từ giao diện
             plain_text = self.plain_text.get("1.0", tk.END).strip()
             key = self.secret_key_enc.get()
             key_size = int(self.key_size_enc.get())
             output_format = self.output_format_enc.get()
 
-            # Gọi hàm mã hóa từ AESCrypto
             encrypted_output = AESCrypto.encrypt(plain_text, key, key_size, output_format)
-
-            # Hiển thị kết quả
             self.encrypted_output.delete("1.0", tk.END)
             self.encrypted_output.insert(tk.END, encrypted_output)
 
@@ -128,16 +132,12 @@ class AESApp:
 
     def decrypt(self):
         try:
-            # Lấy dữ liệu từ giao diện
             encrypted_text = self.encrypted_text.get("1.0", tk.END).strip()
             key = self.secret_key_dec.get()
             key_size = int(self.key_size_dec.get())
             output_format = self.output_format_dec.get()
 
-            # Gọi hàm giải mã từ AESCrypto
             decrypted_output = AESCrypto.decrypt(encrypted_text, key, key_size, output_format)
-
-            # Hiển thị kết quả
             self.decrypted_output.delete("1.0", tk.END)
             self.decrypted_output.insert(tk.END, decrypted_output)
 
