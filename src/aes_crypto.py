@@ -55,7 +55,6 @@ class AESCrypto:
                 print(f"DEBUG - Key treated as UTF-8 string, length: {len(key)}")
                 key_bytes = key.encode('utf-8')
                 
-            print(f"DEBUG - Converted key length: {len(key_bytes)} bytes")
             if len(key_bytes) != key_size_bytes:
                 print(f"DEBUG - Key length mismatch: {len(key_bytes)} vs required {key_size_bytes}")
                 raise ValueError(f"Secret key must be {key_size_bytes} bytes long for {key_size_bits}-bit encryption!")
@@ -64,7 +63,6 @@ class AESCrypto:
             if isinstance(plain_data, str):
                 print(f"DEBUG - Input is string, length: {len(plain_data)}")
                 plain_data_bytes = plain_data.encode('utf-8')
-                print(f"DEBUG - Converted to bytes, length: {len(plain_data_bytes)}")
             elif isinstance(plain_data, bytes):
                 print(f"DEBUG - Input is already bytes, length: {len(plain_data)}")
                 plain_data_bytes = plain_data

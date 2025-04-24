@@ -9,18 +9,18 @@ class AESApp:
 
         # Căn giữa cửa sổ
         self.root.geometry("1150x600")
-        self.root.resizable(False, False)
+        self.root.resizable(True, True)
 
         # Khung chính
         self.main_frame = tk.Frame(self.root, padx=20, pady=20)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
         # LabelFrame cho mã hóa
-        self.enc_frame = tk.LabelFrame(self.main_frame, text="🔐 AES Encryption", padx=10, pady=10, font=("Arial", 12, "bold"))
+        self.enc_frame = tk.LabelFrame(self.main_frame, text="AES Encryption", padx=10, pady=10, font=("Arial", 12, "bold"))
         self.enc_frame.grid(row=0, column=0, padx=10, pady=10, sticky="n")
 
         # LabelFrame cho giải mã
-        self.dec_frame = tk.LabelFrame(self.main_frame, text="🔓 AES Decryption", padx=10, pady=10, font=("Arial", 12, "bold"))
+        self.dec_frame = tk.LabelFrame(self.main_frame, text="AES Decryption", padx=10, pady=10, font=("Arial", 12, "bold"))
         self.dec_frame.grid(row=0, column=1, padx=10, pady=10, sticky="n")
 
         self.build_encryption_section()
@@ -44,7 +44,7 @@ class AESApp:
         self.secret_key_enc.grid(row=4, column=0, columnspan=2, pady=5)
 
         # Random Key Button
-        tk.Button(self.enc_frame, text="🔄 Random Key", command=self.generate_random_key_enc).grid(row=5, column=0, columnspan=2, pady=5)
+        tk.Button(self.enc_frame, text="Random Key", command=self.generate_random_key_enc).grid(row=5, column=0, columnspan=2, pady=5)
 
         # Output Format
         tk.Label(self.enc_frame, text="Output Format:").grid(row=6, column=0, sticky="w")
@@ -61,7 +61,8 @@ class AESApp:
         tk.Label(self.enc_frame, text="Encrypted Output:").grid(row=8, column=0, sticky="w")
         self.encrypted_output = tk.Text(self.enc_frame, height=3, width=45)
         self.encrypted_output.grid(row=9, column=0, columnspan=2, pady=5)
-
+        # Clear Button
+        tk.Button(self.enc_frame, text="Clear", command=self.clear_encryption_fields, width=20).grid(row=10, column=0, columnspan=2, pady=5)
     def build_decryption_section(self):
         # Encrypted Text Input
         tk.Label(self.dec_frame, text="Encrypted Text:").grid(row=0, column=0, sticky="w")
@@ -80,15 +81,14 @@ class AESApp:
         self.secret_key_dec.grid(row=4, column=0, columnspan=2, pady=5)
 
         # Random Key Button
-        tk.Button(self.dec_frame, text="🔄 Random Key", command=self.generate_random_key_dec).grid(row=5, column=0, columnspan=2, pady=5)
+        tk.Button(self.dec_frame, text="Random Key", command=self.generate_random_key_dec).grid(row=5, column=0, columnspan=2, pady=5)
 
         # Output Format
         tk.Label(self.dec_frame, text="Output Format:").grid(row=6, column=0, sticky="w")
         self.output_format_dec = tk.StringVar(value="Plain-Text")
         format_frame = tk.Frame(self.dec_frame)
         format_frame.grid(row=6, column=1, sticky="w")
-        tk.Radiobutton(format_frame, text="Plain-Text", variable=self.output_format_dec, value="Plain-Text").pack(side=tk.LEFT)
-        tk.Radiobutton(format_frame, text="Base64", variable=self.output_format_dec, value="Base64").pack(side=tk.LEFT)
+        tk.Radiobutton(format_frame, text="Plain text", variable=self.output_format_dec, value="Base64").pack(side=tk.LEFT)
 
         # Decrypt Button
         tk.Button(self.dec_frame, text="Decrypt", command=self.decrypt, bg="#2196F3", fg="white", width=20).grid(row=7, column=0, columnspan=2, pady=10)
@@ -97,6 +97,18 @@ class AESApp:
         tk.Label(self.dec_frame, text="Decrypted Output:").grid(row=8, column=0, sticky="w")
         self.decrypted_output = tk.Text(self.dec_frame, height=3, width=45)
         self.decrypted_output.grid(row=9, column=0, columnspan=2, pady=5)
+        # Clear Button
+        tk.Button(self.dec_frame, text="Clear", command=self.clear_decryption_fields, width=20).grid(row=10, column=0, columnspan=2, pady=5)
+    
+    def clear_encryption_fields(self):
+        self.plain_text.delete("1.0", tk.END)
+        self.secret_key_enc.delete(0, tk.END)
+        self.encrypted_output.delete("1.0", tk.END)
+
+    def clear_decryption_fields(self):
+        self.encrypted_text.delete("1.0", tk.END)
+        self.secret_key_dec.delete(0, tk.END)
+        self.decrypted_output.delete("1.0", tk.END)
 
     def generate_random_key_enc(self):
         try:
